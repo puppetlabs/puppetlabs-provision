@@ -1,0 +1,8 @@
+---
+name: provision
+modules:
+- puppetlabs/ruby_task_helper
+- puppetlabs/ruby_plugin_helper
+- puppetlabs/puppet_agent
+- puppetlabs/terraform
+
