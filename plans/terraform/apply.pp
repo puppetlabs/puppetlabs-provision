@@ -18,11 +18,9 @@
 #   Which region to provision infrastructure in, if not provided default will
 #   be determined by provider
 #
-# @param ssh_key
-#   The SSH key name to be provisioned & access the machine
-#
-# @param ssh_user
-#   The ssh user to provision on provisioned VMs
+# @param ssh_key_name
+#   The SSH key name to be used to provision the instance & once the instance gets provisioned
+#   user will use this key to login to the instance.
 #
 # @param subnet
 #   Name or ID of an existing subnet to attach newly provisioned VMs
@@ -30,55 +28,61 @@
 # @param security_group_ids
 #   The list of security group which will be attached to the newly provisioned VMs
 #
-# @param backend
-#   The backend to manage the state of the Terraform project
-#
-# @param bucket
-#   The bucket where tfstate will get maintained
-#
 # @param profile
 #   The name of the profile to be used for provisioning
 #
 # @param tags
 #  The list of tags to be attached to the newly provisioned VMs
 #
-plan provision::terraform::create(
-  String[1] $tf_dir                    = undef,
-  Enum['gcp', 'aws', 'azure'] $provider = 'aws',
-  Enum['xlarge', 'large', 'medium', 'small', 'micro'] $instance_type = 'micro',
-  Enum['arm', 'amd', 'intel'] $architecture                          = 'intel',
-  String[1] $resource_name             = undef,
-  String[1] $image                     = undef,
-  String[1] $region                    = undef,
-  Integer $node_count                  = 1,
-  String[1] $subnet                    = undef,
-  Array $security_group_ids            = [],
-  String[1] $profile                   = undef,
-  String[1] $ssh_key                   = undef,
-  String[1] $ssh_user                  = undef,
-  Optional[Hash] $tags                 = {},
-  Optional[String[1]] $backend         = undef,
-  Optional[String[1]] $bucket          = undef,
+# @param root_block_device_size
+#   The volume size of the root block device in GB
+#
+# @param root_block_volume_type
+#  The type of the root block device to attached to launched instance
+#
+# @param node_count
+#   The number of instance/VMs to be provisioned in the given cloud provider
+#
+plan provision::terraform::apply(
+  String[1] $tf_dir                          = undef,
+  Provision::CloudProvider $provider         = 'aws',
+  Provision::InstanceType $instance_type     = 'micro',
+  Provision::Architecture $architecture      = 'intel',
+  String[1] $resource_name                   = undef,
+  Optional[String[1]] $image                 = undef,
+  String[1] $region                          = undef,
+  Integer[1,10] $node_count                  = 1,
+  String[1] $subnet                          = undef,
+  Array[String[1]] $security_group_ids       = [],
+  String[1] $profile                         = undef,
+  String[1] $ssh_key_name                    = undef,
+  Optional[Hash[String[1], String[1]]] $tags = {},
+  Integer[10, 100] $root_block_device_size   = 10,
+  String[1] $root_block_volume_type          = 'gp3',
+  Optional[Boolean] $associate_public_ip     = false,
 ) {
   # Ensure the Terraform project directory has been initialized ahead of
   # attempting an apply
   out::message('Initializing Terraform for provisioning')
   run_task('terraform::initialize', 'localhost', dir => $tf_dir)
 
-  $_instance_type = provision::instance_type_mapping($provider, $instance_type, $architecture)
+  $_instance_type = provision::map_instance_type($provider, $instance_type, $architecture)
   # Constructs a tfvars file to be used by Terraform
   $tfvars = epp('provision/tfvars.epp', {
       resource_name          => $resource_name,
-      user                   => $ssh_user,
-      ssh_key                => $ssh_key,
+      ssh_key_name           => $ssh_key_name,
       region                 => $region,
       node_count             => $node_count,
+      image_architecture     => provision::map_image_architecture($provider, $architecture),
       image                  => $image,
       subnet                 => $subnet,
       profile                => $profile,
       security_group_ids     => $security_group_ids,
       instance_type          => $_instance_type,
       tags                   => $tags,
+      root_block_device_size => $root_block_device_size,
+      root_block_volume_type => $root_block_volume_type,
+      associate_public_ip    => $associate_public_ip,
   })
 
   out::message('Applying terraform plan to provison infrastructure')

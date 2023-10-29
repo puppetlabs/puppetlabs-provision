@@ -1,5 +1,18 @@
-# Creates a temporary file on the local machine which initiated pecdm and cleans
-# it up when the code requiring the file completes
+# @summary
+#   Creates a temporary file on the local machine which initiated pecdm and cleans
+#   it up when the code requiring the file completes
+#
+# @param [String] name
+#   The name of file to create temporary on filesystem
+#
+# @param [String] contents
+#   The contents of the file to be created
+#
+# @param [String] extension
+#  The extension of the file to be created
+#
+# @param [Callable[1, 1]] block
+#  The block of code to be executed with the temporary file
 #
 require 'tempfile'
 Puppet::Functions.create_function(:'provision::with_tempfile_containing') do

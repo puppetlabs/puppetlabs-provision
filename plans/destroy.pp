@@ -13,16 +13,11 @@
 # @param profile
 #   The name of the profile to be used for provisioning
 #
-# @param image
-#   The cloud image that is used for new instance provisioning, format differs
-#   depending on provider
-#
 plan provision::destroy(
-  Enum['gcp', 'aws', 'azure']  $provider      = 'aws',
-  String[1]                    $resource_name = undef,
-  String[1]                    $profile       = undef,
-  String[1]                    $image         = undef,
-  Optional[String[1]]          $region        = undef,
+  Provision::CloudProvider  $provider      = 'aws',
+  String[1]                 $resource_name = 'puppetlabs-provision',
+  String[1]                 $profile       = undef,
+  Optional[String[1]]       $region        = 'us-west-2',
 ) {
   $_tf_dir = "terraform/${provider}/"
 
@@ -32,7 +27,6 @@ plan provision::destroy(
       tf_dir        => $_tf_dir,
       resource_name => $resource_name,
       profile       => $profile,
-      image         => $image,
       region        => $region,
   })
   out::message('Provisioned infrastructure successfully destroyed')

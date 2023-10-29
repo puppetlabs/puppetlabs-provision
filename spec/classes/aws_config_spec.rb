@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'provision::aws' do
+describe 'provision::aws_config' do
   let(:params) do
     {
       access_key_id: 'access_key_id',

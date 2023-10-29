@@ -13,15 +13,10 @@
 # @param profile
 #   The name of the profile to be used for provisioning
 #
-# @param image
-#   The cloud image that is used for new instance provisioning, format differs
-#   depending on provider
-#
 plan provision::terraform::destroy(
   String[1]                    $tf_dir,
   String[1]                    $resource_name = undef,
   String[1]                    $profile       = undef,
-  String[1]                    $image         = undef,
   Optional[String[1]]          $region        = undef,
 ) {
   out::message('Initializing Terraform to destroy provisioned infrastructure')
@@ -32,7 +27,6 @@ plan provision::terraform::destroy(
     <% unless $region == undef { -%>
     region        = "<%= $region %>"
     <% } -%>
-    image         = "<%= $image %>"
     # Required parameters which values are irrelevant on destroy
     profile       = "<%= $profile %>"
     |TFVARS

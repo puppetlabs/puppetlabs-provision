@@ -7,8 +7,23 @@ data "aws_ami" "ami" {
   most_recent = true
 
   filter {
-    name   = "image-id"
+    name   = "name"
     values = [var.image]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = [var.image_architecture]
+  }
+
+  filter {
+    name   = "owner-id"
+    values = [var.image_owner]
   }
 }
 
@@ -26,15 +41,17 @@ resource "aws_instance" "server" {
   ami                    = data.aws_ami.ami.id
   instance_type          = var.instance_type
   count                  = var.node_count
-  key_name               = var.ssh_key
+  key_name               = var.ssh_key_name
   subnet_id              = var.subnet_id
   vpc_security_group_ids = var.security_group_ids
-  tags                   = merge(local.tags, tomap({
+  tags = merge(local.tags, tomap({
     "Name" = "${var.name}-${count.index + 1}"
   }))
 
+  associate_public_ip_address = var.associate_public_ip_address
   root_block_device {
-    volume_size = var.root_block_device.volume_size
-    volume_type = var.root_block_device.volume_type
+    volume_size           = var.root_block_device.volume_size
+    volume_type           = var.root_block_device.volume_type
+    delete_on_termination = true
   }
 }

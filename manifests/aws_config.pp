@@ -13,7 +13,7 @@
 # @param profile
 #    Optional profile name to use for credentials
 #
-class provision::aws (
+class provision::aws_config (
   Optional[String[1]] $access_key_id     = undef,
   Optional[String[1]] $secret_access_key = undef,
   Optional[String[1]] $session_token     = undef,

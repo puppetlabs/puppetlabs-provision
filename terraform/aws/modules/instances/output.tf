@@ -4,7 +4,15 @@ output "public_ips" {
     for idx, instance in aws_instance.server :
     idx => instance.public_ip
   }
-  description = "The public IP addresses of the instance"
+  description = "The public IPs address of the provisioned node(s)"
+}
+
+output "private_dns" {
+  value = {
+    for idx, instance in aws_instance.server :
+    idx => instance.private_dns
+  }
+  description = "The private DNS of the provisioned node(s)"
 }
 
 output "private_ips" {
@@ -12,5 +20,5 @@ output "private_ips" {
     for idx, instance in aws_instance.server :
     idx => instance.private_ip
   }
-  description = "The private IP addresses of the instance"
+  description = "The private IPs of the provisioned node(s)"
 }

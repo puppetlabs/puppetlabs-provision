@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'provision::instance_type_mapping' do
+describe 'provision::map_instance_type' do
   context 'when called with aws cloud provider' do
     it { is_expected.to run.with_params('aws', 'small', 'intel').and_return('t3.small') }
     it { is_expected.to run.with_params('aws', 'micro', 'intel').and_return('t3.micro') }
