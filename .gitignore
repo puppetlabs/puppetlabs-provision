@@ -26,3 +26,13 @@
 .envrc
 /inventory.yaml
 /spec/fixtures/litmus_inventory.yaml
+.modules/
+.plan_cache.json
+.resource_types/*
+.task_cache.json
+bolt-debug.log
+terraform/*/.terraform.lock.hcl
+terraform/*/.terraform/
+terraform/*/*.tfstate
+terraform/*/*.tfstate.backup
+.rvmrc

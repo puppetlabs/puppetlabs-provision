@@ -55,6 +55,13 @@ The very basic steps needed for a user to get the module up and running. This
 can include setup steps, if necessary, or it can be an example of the most basic
 use of the module.
 
+### Beginning with provision
+
+1. Clone this repository: `git clone https://github.com/puppetlabs/puppetlabs-provision.git && cd puppetlabs-provision`
+2. Install module dependencies: `bolt module install --no-resolve` (manually manages modules to take advantage of functionality that allows for additional content to be deployed that does not adhere to the Puppet Module packaging format, e.g. Terraform modules)
+3. Run plan to provision a node: `bolt plan run provision::create --targets=localhost ssh_key=<ssh-key-name> security_group_ids='["<security-group-id>"]' subnet=<subnet-id>`
+4. Wait. This is best executed from a bastion host or alternatively, a fast connection with strong upload bandwidth
+
 ## Usage
 
 Include usage examples for common use cases in the **Usage** section. Show your

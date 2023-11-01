@@ -1,0 +1,11 @@
+node_count: 1
+ssh_key: puppetlabs_root_id_rsa
+user: ec2-user
+image: ami-0fb37f914aa1db7cd
+subnet_ids:
+  - subnet-0096d0de092f058d8
+  - subnet-076eb1794cb446af6
+security_group_ids:
+  - sg-09731612cf889f1b8
+
+

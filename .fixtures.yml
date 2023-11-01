@@ -23,4 +23,4 @@ fixtures:
       repo: https://github.com/puppetlabs/puppetlabs-puppet_agent.git
       ref: v4.13.0
     facts: https://github.com/puppetlabs/puppetlabs-facts.git
-    provision: https://github.com/puppetlabs/provision.git
+    # provision: https://github.com/puppetlabs/provision.git

@@ -1,0 +1,63 @@
+<%- | String                                        $resource_name,
+      Optional[String[1]]                           $ssh_key_name,
+      Optional[Integer]                             $node_count,
+      Optional[Variant[String[1]]]                  $image_architecture,
+      Optional[Variant[String[1]]]                  $subnet,
+      Optional[Variant[String[1],Array[String[1]]]] $security_group_ids,
+      String                                        $region,
+      String                                        $profile,
+      String                                        $instance_type,
+      Hash                                          $tags,
+      Optional[Variant[String[1]]]                  $image,
+      Integer                                       $root_block_device_size,
+      String                                        $root_block_volume_type,
+      Boolean                                       $associate_public_ip,
+| -%>
+# Mapping all the plan parameters to their corresponding Terraform vars
+#
+# Quoting is important in a Terraform vars file so we take care in preserving
+# them and converting single quotes to double.
+<%- if $resource_name != undef { -%>
+name               = "<%= $resource_name %>"
+<%- } -%>
+<%- unless $ssh_key_name == undef { -%>
+ssh_key_name       = "<%= $ssh_key_name %>"
+<%- } -%>
+region             = "<%= $region %>"
+<%- unless $node_count == undef { -%>
+node_count         = <%= $node_count %>
+<%- } -%>
+<%- unless $image == undef { -%>
+image              = "<%= $image %>"
+<%- } -%>
+<%- unless $image_architecture == undef { -%>
+image_architecture = "<%= $image_architecture %>"
+<%- } -%>
+<%- unless $security_group_ids == undef { -%>
+security_group_ids = <%= String($security_group_ids).regsubst('\'', '"', 'G') %>
+<%- } -%>
+<%- unless $subnet == undef { -%>
+subnet_id          = "<%= $subnet %>"
+<%- } -%>
+<%- unless $profile == undef { -%>
+profile            = "<%= $profile %>"
+<%- } -%>
+<%- unless $instance_type == undef { -%>
+instance_type      = "<%= $instance_type %>"
+<%- } -%>
+<%- unless $associate_public_ip == undef { -%>
+associate_public_ip_address = <%= $associate_public_ip %>
+<%- } -%>
+<%- unless $root_block_device_size == undef { -%>
+root_block_device  = {
+  volume_size = <%= $root_block_device_size %>
+  volume_type = "<%= $root_block_volume_type %>"
+}
+<%- } -%>
+<%- unless $tags.empty { -%>
+tags = {
+  <%- $tags.each | String $key, String $value | { -%>
+    <%= $key %> = "<%= $value %>"
+  <%- } -%>
+}
+<%- } -%>
