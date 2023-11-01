@@ -1,0 +1,7 @@
+---
+# instance metadata
+instance_type::micro: 't4g.micro'
+instance_type::small: 't4g.small'
+instance_type::standard: 't4g.medium'
+instance_type::large: 't4g.large'
+instance_type::xlarge: 't4g.xlarge'

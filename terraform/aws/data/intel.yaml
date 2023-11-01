@@ -1,0 +1,7 @@
+---
+# instance metadata
+instance_type::micro: 't3.micro'
+instance_type::small: 't3.small'
+instance_type::standard: 't3.medium'
+instance_type::large: 't3.large'
+instance_type::xlarge: 't3.xlarge'

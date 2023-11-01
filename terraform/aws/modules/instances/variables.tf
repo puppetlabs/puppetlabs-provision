@@ -80,6 +80,6 @@ variable "profile" {
 
 variable "associate_public_ip_address" {
   description = "To associate public ip address"
-  type       = bool
-  default    = false
+  type        = bool
+  default     = false
 }

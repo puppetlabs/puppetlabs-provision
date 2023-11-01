@@ -46,12 +46,12 @@
 plan provision::terraform::apply(
   String[1] $tf_dir                          = undef,
   Provision::CloudProvider $provider         = 'aws',
-  Provision::InstanceType $instance_type     = 'micro',
-  Provision::Architecture $architecture      = 'intel',
-  String[1] $resource_name                   = undef,
+  Provision::InstanceType $instance_size     = 'micro',
+  Provision::HardwareArchitecture $hardware_architecture = 'intel',
+  String[1] $resource_name                   = 'puppetlabs-provision',
   Optional[String[1]] $image                 = undef,
-  String[1] $region                          = undef,
-  Integer[1,10] $node_count                  = 1,
+  String[1] $region                          = 'us-west-2',
+  Optional[Integer[1, 10]] $node_count       = 1,
   String[1] $subnet                          = undef,
   Array[String[1]] $security_group_ids       = [],
   String[1] $profile                         = undef,
@@ -66,19 +66,18 @@ plan provision::terraform::apply(
   out::message('Initializing Terraform for provisioning')
   run_task('terraform::initialize', 'localhost', dir => $tf_dir)
 
-  $_instance_type = provision::map_instance_type($provider, $instance_type, $architecture)
   # Constructs a tfvars file to be used by Terraform
   $tfvars = epp('provision/tfvars.epp', {
       resource_name          => $resource_name,
       ssh_key_name           => $ssh_key_name,
       region                 => $region,
       node_count             => $node_count,
-      image_architecture     => provision::map_image_architecture($provider, $architecture),
       image                  => $image,
       subnet                 => $subnet,
       profile                => $profile,
       security_group_ids     => $security_group_ids,
-      instance_type          => $_instance_type,
+      hardware_architecture  => $hardware_architecture,
+      instance_size          => $instance_size,
       tags                   => $tags,
       root_block_device_size => $root_block_device_size,
       root_block_volume_type => $root_block_volume_type,

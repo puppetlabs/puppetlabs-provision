@@ -19,19 +19,13 @@ variable "tags" {
 variable "image" {
   description = "AMI to use for the instance"
   type        = string
-  default     = "al2-chronicle*"
+  default     = "764336703387/AlmaLinux OS 8.8.2023*"
 }
 
 variable "image_owner" {
   description = "Owner of the AMI to use for the instance"
   type        = string
   default     = "*"
-}
-
-variable "image_architecture" {
-  description = "Architecture of the AMI to use for the instance"
-  type        = string
-  default     = "x86_64"
 }
 
 variable "security_group_ids" {
@@ -61,16 +55,22 @@ variable "ssh_key_name" {
   default     = ""
 }
 
-variable "instance_type" {
-  description = "Instance type to use for the instance"
+variable "instance_size" {
+  description = "Instance size to use for the instance"
   type        = string
-  default     = "t3.medium"
+  default     = "micro"
 }
 
 variable "node_count" {
   description = "Number of servers to deploy"
   type        = number
   default     = 1
+}
+
+variable "hardware_architecture" {
+  description = "Architecture of the AMI to use for the instance"
+  type        = string
+  default     = "amd"
 }
 
 variable "profile" {
@@ -81,6 +81,6 @@ variable "profile" {
 
 variable "associate_public_ip_address" {
   description = "To associate public ip address"
-  type       = bool
-  default    = false
+  type        = bool
+  default     = false
 }

@@ -49,21 +49,21 @@
 #   Associate a public IP address with an instance in VPC/Network
 #
 plan provision::create(
-  String[1] $resource_name                   = 'puppetlabs-provision',
-  Provision::CloudProvider $provider         = 'aws',
-  Provision::InstanceType $instance_type     = 'micro',
-  Provision::Architecture $architecture      = 'amd',
-  String[1] $region                          = 'us-west-2',
-  Integer[1,10] $node_count                  = 1,
-  String[1] $subnet                          = undef,
-  Array[String[1]] $security_group_ids       = undef,
-  String[1] $profile                         = undef,
-  String[1] $ssh_key_name                    = undef,
-  Integer[10, 100] $root_block_device_size   = 10,
-  String[1] $root_block_volume_type          = 'gp3',
-  Optional[String[1]] $image                 = undef,
-  Optional[Boolean] $associate_public_ip     = false,
-  Optional[Hash[String[1], String[1]]] $tags = {},
+  String[1] $resource_name                       = 'puppetlabs-provision',
+  Provision::CloudProvider $provider             = 'aws',
+  Provision::InstanceType $instance_size         = 'micro',
+  Provision::HardwareArchitecture $hardware_architecture = 'amd',
+  String[1] $region                              = 'us-west-2',
+  Integer[10, 100] $root_block_device_size       = 10,
+  String[1] $root_block_volume_type              = 'gp3',
+  Optional[Boolean] $associate_public_ip         = false,
+  String[1] $subnet                              = undef,
+  Array[String[1]] $security_group_ids           = undef,
+  Optional[String[1]] $profile                   = 'default',
+  String[1] $ssh_key_name                        = undef,
+  Optional[String[1]] $image                     = undef,
+  Optional[Integer[1, 10]] $node_count           = 1,
+  Optional[Hash[String[1], String[1]]] $tags     = {},
 ) {
   out::message('Starting infrastructure provisioning')
   $tf_dir = "terraform/${provider}/"
@@ -71,9 +71,9 @@ plan provision::create(
   $result = run_plan('provision::terraform::apply', {
       tf_dir                 => $tf_dir,
       provider               => $provider,
-      architecture           => $architecture,
+      hardware_architecture  => $hardware_architecture,
       resource_name          => $resource_name,
-      instance_type          => $instance_type,
+      instance_size          => $instance_size,
       image                  => $image,
       region                 => $region,
       node_count             => $node_count,
