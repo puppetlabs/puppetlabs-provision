@@ -1,17 +1,14 @@
-<%- | String                                        $resource_name,
-      Optional[String[1]]                           $ssh_key_name,
-      Optional[Variant[String[1]]]                  $hardware_architecture,
-      Optional[Variant[String[1]]]                  $subnet,
-      Optional[Variant[String[1],Array[String[1]]]] $security_group_ids,
-      String                                        $region,
-      String                                        $profile,
-      String                                        $instance_size,
-      Hash                                          $tags,
-      Optional[Variant[String[1]]]                  $image,
-      Integer                                       $root_block_device_size,
-      String                                        $root_block_volume_type,
-      Boolean                                       $associate_public_ip,
-      Optional[Integer]                             $node_count,
+<%- | String                               $resource_name,
+      Optional[String[1]]                  $hardware_architecture,
+      Optional[String[1]]                  $subnet,
+      Optional[Array[String[1]]]           $security_group_ids,
+      String                               $region,
+      String                               $instance_size,
+      Hash                                 $tags,
+      Optional[String[1]]                  $image,
+      Boolean                              $associate_public_ip,
+      Optional[Integer]                    $node_count,
+      Optional[Hash[String[1], String[1]]] $provider_options,
 | -%>
 # Mapping all the plan parameters to their corresponding Terraform vars
 #
@@ -20,39 +17,27 @@
 <%- if $resource_name != undef { -%>
 name                  = "<%= $resource_name %>"
 <%- } -%>
-<%- unless $ssh_key_name == undef { -%>
-ssh_key_name          = "<%= $ssh_key_name %>"
-<%- } -%>
-<%- unless $node_count == undef { -%>
+<%- if $node_count != undef { -%>
 node_count            = <%= $node_count %>
 <%- } -%>
 region                = "<%= $region %>"
-<%- unless $image == undef { -%>
+<%- if $image != undef { -%>
 image                 = "<%= $image %>"
 <%- } -%>
-<%- unless $hardware_architecture == undef { -%>
+<%- if $hardware_architecture != undef { -%>
 hardware_architecture = "<%= $hardware_architecture %>"
 <%- } -%>
-<%- unless $security_group_ids == undef { -%>
+<%- if $security_group_ids != undef { -%>
 security_group_ids    = <%= String($security_group_ids).regsubst('\'', '"', 'G') %>
 <%- } -%>
-<%- unless $subnet == undef { -%>
+<%- if $subnet != undef { -%>
 subnet_id             = "<%= $subnet %>"
 <%- } -%>
-<%- unless $profile == undef { -%>
-profile               = "<%= $profile %>"
-<%- } -%>
-<%- unless $instance_size == undef { -%>
+<%- if $instance_size != undef { -%>
 instance_size         = "<%= $instance_size %>"
 <%- } -%>
-<%- unless $associate_public_ip == undef { -%>
+<%- if $associate_public_ip != undef { -%>
 associate_public_ip_address = <%= $associate_public_ip %>
-<%- } -%>
-<%- unless $root_block_device_size == undef { -%>
-root_block_device = {
-  volume_size = <%= $root_block_device_size %>
-  volume_type = "<%= $root_block_volume_type %>"
-}
 <%- } -%>
 <%- unless $tags.empty { -%>
 tags = {
@@ -60,4 +45,9 @@ tags = {
     <%= $key %> = "<%= $value %>"
   <%- } -%>
 }
+<%- } -%>
+<%- if $provider_options != undef { -%>
+<% $provider_options.each |String $key, String $value | { -%>
+<%= $key %> = "<%= $value %>"
+<%- } -%>
 <%- } -%>

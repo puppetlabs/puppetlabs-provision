@@ -1,13 +1,11 @@
 variable "region" {
   description = "AWS region to deploy to"
   type        = string
-  default     = "us-west-2"
 }
 
 variable "name" {
   description = "Name of provisioned resource"
   type        = string
-  default     = "puppetlabs-provision"
 }
 
 variable "tags" {
@@ -40,13 +38,16 @@ variable "subnet_id" {
   default     = ""
 }
 
-variable "root_block_device" {
-  description = "Root block device configuration"
-  type        = map(any)
-  default = {
-    volume_size = 10
-    volume_type = "gp3"
-  }
+variable "root_block_device_volume_size" {
+  description = "Root block device size in GB"
+  type        = string
+  default     = "10"
+}
+
+variable "root_block_device_volume_type" {
+  description = "Root block device type"
+  type        = string
+  default     = "gp3"
 }
 
 variable "ssh_key_name" {
