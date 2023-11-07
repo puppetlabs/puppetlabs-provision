@@ -1,0 +1,7 @@
+---
+# instance metadata
+instance_type::micro: t3a.micro
+instance_type::small: t3a.small
+instance_type::standard: t3a.medium
+instance_type::large: t3a.large
+instance_type::xlarge: t3a.xlarge

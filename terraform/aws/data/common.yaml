@@ -1,0 +1,4 @@
+---
+image::intel: x86_64
+image::amd: x86_64
+image::arm: arm64

@@ -1,3 +1,6 @@
+# This plan isn't shown in plan list output
+# @api private
+#
 # @summary Destroy a earlier provisioned virtual machine using terraform
 #
 # @param tf_dir
@@ -23,7 +26,7 @@ plan provision::terraform::destroy(
   run_task('terraform::initialize', 'localhost', dir => $tf_dir)
 
   $vars_template = @(TFVARS)
-    resource_name = <%= $resource_name %>
+    name = "<%= $resource_name %>"
     <% unless $region == undef { -%>
     region        = "<%= $region %>"
     <% } -%>

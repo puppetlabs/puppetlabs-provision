@@ -8,7 +8,7 @@ terraform {
 
     hiera5 = {
       source  = "chriskuchin/hiera5"
-      version = "0.5.4"
+      version = "0.3.0"
     }
   }
 }

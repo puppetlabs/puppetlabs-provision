@@ -1,13 +1,11 @@
 variable "region" {
   description = "AWS region to deploy to"
   type        = string
-  default     = "us-west-2"
 }
 
 variable "name" {
   description = "Name of provisioned resource"
   type        = string
-  default     = "puppetlabs-provision"
 }
 
 variable "tags" {
@@ -19,19 +17,13 @@ variable "tags" {
 variable "image" {
   description = "AMI to use for the instance"
   type        = string
-  default     = "al2-chronicle*"
+  default     = "764336703387/AlmaLinux OS 8.8.2023*"
 }
 
 variable "image_owner" {
   description = "Owner of the AMI to use for the instance"
   type        = string
   default     = "*"
-}
-
-variable "image_architecture" {
-  description = "Architecture of the AMI to use for the instance"
-  type        = string
-  default     = "x86_64"
 }
 
 variable "security_group_ids" {
@@ -46,13 +38,16 @@ variable "subnet_id" {
   default     = ""
 }
 
-variable "root_block_device" {
-  description = "Root block device configuration"
-  type        = map(any)
-  default = {
-    volume_size = 10
-    volume_type = "gp3"
-  }
+variable "root_block_device_volume_size" {
+  description = "Root block device size in GB"
+  type        = string
+  default     = "10"
+}
+
+variable "root_block_device_volume_type" {
+  description = "Root block device type"
+  type        = string
+  default     = "gp3"
 }
 
 variable "ssh_key_name" {
@@ -61,16 +56,22 @@ variable "ssh_key_name" {
   default     = ""
 }
 
-variable "instance_type" {
-  description = "Instance type to use for the instance"
+variable "instance_size" {
+  description = "Instance size to use for the instance"
   type        = string
-  default     = "t3.medium"
+  default     = "micro"
 }
 
 variable "node_count" {
   description = "Number of servers to deploy"
   type        = number
   default     = 1
+}
+
+variable "hardware_architecture" {
+  description = "Architecture of the AMI to use for the instance"
+  type        = string
+  default     = "amd"
 }
 
 variable "profile" {
@@ -81,6 +82,6 @@ variable "profile" {
 
 variable "associate_public_ip_address" {
   description = "To associate public ip address"
-  type       = bool
-  default    = false
+  type        = bool
+  default     = false
 }
