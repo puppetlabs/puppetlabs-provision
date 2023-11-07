@@ -6,9 +6,11 @@
       String                               $instance_size,
       Hash                                 $tags,
       Optional[String[1]]                  $image,
-      Boolean                              $associate_public_ip,
       Optional[Integer]                    $node_count,
-      Optional[Hash[String[1], String[1]]] $provider_options,
+      Optional[Provision::ProviderOptions] $provider_options,
+      String[1]                            $environment,
+      String[1]                            $pe_server,
+      String[1]                            $os_type,
 | -%>
 # Mapping all the plan parameters to their corresponding Terraform vars
 #
@@ -36,9 +38,6 @@ subnet_id             = "<%= $subnet %>"
 <%- if $instance_size != undef { -%>
 instance_size         = "<%= $instance_size %>"
 <%- } -%>
-<%- if $associate_public_ip != undef { -%>
-associate_public_ip_address = <%= $associate_public_ip %>
-<%- } -%>
 <%- unless $tags.empty { -%>
 tags = {
   <%- $tags.each | String $key, String $value | { -%>
@@ -47,7 +46,21 @@ tags = {
 }
 <%- } -%>
 <%- if $provider_options != undef { -%>
-<% $provider_options.each |String $key, String $value | { -%>
+<% $provider_options.each |$key, $value | { -%>
+<%- if $value =~ Boolean or $value =~ Integer { -%>
+<%= $key %> = <%= $value %>
+<%- } else { -%>
 <%= $key %> = "<%= $value %>"
 <%- } -%>
+<%- } -%>
+<%- } -%>
+# PE specific vars to configure the provisioned VM
+<%- unless $pe_server == undef { -%>
+pe_server       = "<%= $pe_server %>"
+<%- } -%>
+<%- unless $environment == undef {-%>
+environment           = "<%= $environment %>"
+<%- } -%>
+<%- unless $os_type == undef {-%>
+os_type               = "<%= $os_type %>"
 <%- } -%>

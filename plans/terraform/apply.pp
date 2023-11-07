@@ -9,8 +9,9 @@
 # @param resource_name
 #   The name of the resource to be provisioned
 #
-# @param instance_type
-#   The instance type to be provisioned
+# @param instance_size
+#   The instance size to be provisioned, the module will translate the instance size to the cloud provider specific
+#   instance type depending on the provider.
 #
 # @param image
 #   The cloud image that is used for new instance provisioning, the format of image varies
@@ -44,10 +45,20 @@
 #       "profile": "default",                   # AWS profile name
 #       "ssh_key_name": "access_key",           # The SSH key name for provisioning the instance.
 #       "root_block_device_volume_type": "gp3", # The type of the root block device.
-#       "root_block_device_volume_size": 10     # The volume size of the root block device in GB.
+#       "root_block_device_volume_size": 10,     # The volume size of the root block device in GB.
+#       "associate_public_ip_address": true             # Associate a public IP address to provisioned instance.
 #     }
 #
 #     These settings allow you to customize the provisioning process based on cloud provider and specific requirements.
+#
+# @param pe_server
+#   The PE server to be used for provisioning the VMs
+#
+# @param environment
+#   The puppet environment to be used to configure the provisioning the VMs
+#
+# @param os_type
+#   The type of operating system type to be used for provisioning the VMs
 #
 plan provision::terraform::apply(
   String[1] $tf_dir,
@@ -61,8 +72,10 @@ plan provision::terraform::apply(
   Optional[Integer[1, 10]] $node_count,
   Optional[String[1]] $image,
   Optional[Hash[String[1], String[1]]] $tags,
-  Optional[Boolean] $associate_public_ip,
-  Optional[Hash[String[1], String[1]]] $provider_options,
+  Optional[String[1]] $pe_server,
+  Optional[String[1]] $environment,
+  Optional[Enum['linux', 'windows']] $os_type,
+  Optional[Provision::ProviderOptions] $provider_options,
 ) {
   # Ensure the Terraform project directory has been initialized ahead of
   # attempting an apply
@@ -80,11 +93,15 @@ plan provision::terraform::apply(
       hardware_architecture  => $hardware_architecture,
       instance_size          => $instance_size,
       tags                   => $tags,
-      associate_public_ip    => $associate_public_ip,
       provider_options       => $provider_options,
+      pe_server              => $pe_server,
+      environment            => $environment,
+      os_type                => $os_type,
   })
 
-  out::message('Applying terraform plan to provison infrastructure')
+  out::message('Applying terraform plan to provison instance')
+  out::message("The plan will be store the state file named ${resource_name}.tfstate under ${tf_dir} directory")
+  out::message("To destroy the provisioned instance, you should use the ${resource_name} as resource name to destroy the correct instance(s)")
   # Creating an on-disk tfvars file to be used by Terraform::Apply to avoid a
   # shell escaping issue
   #

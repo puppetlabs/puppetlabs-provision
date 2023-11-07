@@ -32,6 +32,7 @@ locals {
   tags = merge({
     description = "Node provisioned via Puppet Provisioner Module"
   }, var.tags)
+  file_extension = var.os_type == "windows" ? "ps1" : "sh"
 }
 
 # In both large and standard we only require a single Primary but under a
@@ -49,6 +50,7 @@ resource "aws_instance" "server" {
   }))
 
   associate_public_ip_address = var.associate_public_ip_address
+  user_data = templatefile("${path.module}/../../../../scripts/${var.os_type}.${local.file_extension}", { pe_server = var.pe_server, environment = var.environment, hostname = var.name })
   root_block_device {
     volume_size           = var.root_block_device.volume_size
     volume_type           = var.root_block_device.volume_type

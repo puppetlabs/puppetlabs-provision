@@ -57,3 +57,18 @@ variable "associate_public_ip_address" {
   description = "To associate public ip address"
   type        = bool
 }
+
+variable "pe_server" {
+  description = "The PE server endpoint to run the puppet agent"
+  type = string
+}
+
+variable "os_type" {
+  description = "The type of OS (windows or linux) to configure the puppet agent using bootstrap script"
+  type = string
+}
+
+variable "environment" {
+  description = "The puppet environment to configure the puppet agent"
+  type = string
+}

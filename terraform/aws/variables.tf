@@ -40,8 +40,8 @@ variable "subnet_id" {
 
 variable "root_block_device_volume_size" {
   description = "Root block device size in GB"
-  type        = string
-  default     = "10"
+  type        = number
+  default     = 10
 }
 
 variable "root_block_device_volume_type" {
@@ -84,4 +84,22 @@ variable "associate_public_ip_address" {
   description = "To associate public ip address"
   type        = bool
   default     = false
+}
+
+variable "pe_server" {
+  description = "The PE server to be used for pointing the VM's puppet agent to"
+  type = string
+  default = ""
+}
+
+variable "os_type" {
+  description = "The type of operating system (linux or windows) to be used for provisioning the VMs"
+  type = string
+  default = "linux"
+}
+
+variable "environment" {
+  description = "The puppet environment to place the agent in"
+  type = string
+  default = "production"
 }
