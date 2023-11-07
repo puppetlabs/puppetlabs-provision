@@ -63,7 +63,20 @@ plan provision::terraform::apply(
   Optional[Hash[String[1], String[1]]] $tags,
   Optional[Boolean] $associate_public_ip,
   Optional[Hash[String[1], String[1]]] $provider_options,
+  Optional[String[1]] $project,
 ) {
+
+  # Validate the provider options for GCP
+  if $provider == 'gcp'{
+    if ENV['GOOGLE_CREDENTIALS'] == undef and ENV['GOOGLE_APPLICATION_CREDENTIALS'] == undef {
+      fail('GOOGLE_CREDENTIALS or GOOGLE_APPLICATION_CREDENTIALS environment variable is required for Google Cloud Provider')
+    }
+
+    if $project == undef {
+      fail('project is required for Google Cloud Provider')
+    }
+  }
+
   # Ensure the Terraform project directory has been initialized ahead of
   # attempting an apply
   out::message('Initializing Terraform for provisioning')
@@ -82,6 +95,7 @@ plan provision::terraform::apply(
       tags                   => $tags,
       associate_public_ip    => $associate_public_ip,
       provider_options       => $provider_options,
+      project                => $project,
   })
 
   out::message('Applying terraform plan to provison infrastructure')

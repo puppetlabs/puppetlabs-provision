@@ -1,0 +1,7 @@
+---
+# instance metadata
+instance_type::micro: 'n2d-standard-1'
+instance_type::small: 'n2d-standard-2'
+instance_type::standard: 'n2d-standard-4'
+instance_type::large: 'n2d-standard-8'
+instance_type::xlarge: 'n2d-standard-16'

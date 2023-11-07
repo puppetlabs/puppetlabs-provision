@@ -56,6 +56,7 @@ plan provision::create(
   String[1] $subnet,
   Array[String[1]] $security_group_ids,
   Optional[String[1]] $image                     = undef,
+  Optional[String[1]] $project                   = undef,
   String[1] $resource_name                       = 'puppetlabs-provision',
   Provision::CloudProvider $provider             = 'aws',
   Provision::InstanceType $instance_size         = 'micro',
@@ -83,6 +84,7 @@ plan provision::create(
       associate_public_ip    => $associate_public_ip,
       tags                   => $tags,
       provider_options       => $provider_options,
+      project                => $project,
   })
 
   out::message("Completed infrastructure provisioning with ${node_count} servers")

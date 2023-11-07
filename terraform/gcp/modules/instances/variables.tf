@@ -18,11 +18,6 @@ variable "region" {
   type        = string
 }
 
-variable "zones" {
-  description = "GCP zone that are within the defined GCP region that you wish to use"
-  type        = list(string)
-}
-
 variable "server_count" {
   description = "Number of servers to deploy"
   type        = number

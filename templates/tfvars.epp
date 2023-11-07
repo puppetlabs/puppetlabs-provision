@@ -9,6 +9,7 @@
       Boolean                              $associate_public_ip,
       Optional[Integer]                    $node_count,
       Optional[Hash[String[1], String[1]]] $provider_options,
+      Optional[String[1]]                  $project,
 | -%>
 # Mapping all the plan parameters to their corresponding Terraform vars
 #
@@ -16,6 +17,9 @@
 # them and converting single quotes to double.
 <%- if $resource_name != undef { -%>
 name                  = "<%= $resource_name %>"
+<%- } -%>
+<%- if $project != undef { -%>
+project                  = "<%= $project %>"
 <%- } -%>
 <%- if $node_count != undef { -%>
 node_count            = <%= $node_count %>

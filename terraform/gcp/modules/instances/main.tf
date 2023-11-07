@@ -1,7 +1,14 @@
+data "google_compute_zones" "available" {
+  status = "UP"
+}
+
+locals {
+  zones = try(data.google_compute_zones.available.names, ["a", "b", "c"])
+}
 resource "google_compute_instance" "gcp-server" {
   name         = "${var.name}-${count.index}"
   machine_type = "${var.machine_type}"
-  zone         = element(var.zones, count.index)
+  zone         = element(local.zones, count.index)
   count        = var.server_count
   labels = var.labels
 

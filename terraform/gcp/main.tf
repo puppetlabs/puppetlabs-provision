@@ -1,23 +1,24 @@
-data "google_compute_zones" "available" {
-  status = "UP"
+provider "hiera5" {
+  scope = {
+    hardware_architecture = var.hardware_architecture
+  }
 }
 
-locals {
-  zones = try(data.google_compute_zones.available.names, ["a", "b", "c"])
+data "hiera5" "instance_type" {
+  key = "instance_type::${var.instance_size}"
 }
 
 module "instances" {
   source       = "./modules/instances"
   project      = var.project
   name         = var.name
-  machine_type = var.machine_type
-  zones        = local.zones
-  server_count = var.server_count
+  machine_type = data.hiera5.instance_type.value
+  server_count = var.node_count
   image        = var.image
-  labels       = var.labels
+  labels       = var.tags
   boot_disk_params = {
-    size = var.boot_disk_params.size
-    type = var.boot_disk_params.type
+    size = var.root_block_device_volume_size
+    type = var.root_block_device_volume_type
   }
   network            = var.network
   subnetwork         = var.subnetwork
