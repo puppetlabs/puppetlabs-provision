@@ -1,3 +1,9 @@
+provider "google" {
+  project = var.project
+  region  = var.region
+  credentials = var.profile
+}
+
 provider "hiera5" {
   scope = {
     hardware_architecture = var.hardware_architecture

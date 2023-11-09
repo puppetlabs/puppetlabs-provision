@@ -50,13 +50,19 @@
 #       "root_block_device_volume_size": 10     # The volume size of the root block device in GB.
 #     }
 #
+#   Eg: 
+#     For instance, when configuring options for GCP, you can include the following settings:
+#     {
+#       "root_block_device_volume_type": "pd-ssd", # Boot Disk Type.
+#       "root_block_device_volume_size": 10     # Boot Disk Size.
+#     }
+#   
 #     These settings allow you to customize the provisioning process based on cloud provider and specific requirements.
 #
 plan provision::create(
-  String[1] $subnet,
-  Array[String[1]] $security_group_ids,
+  Optional[String[1]] $subnet = undef,
+  Optional[Array[String[1]]] $security_group_ids = ['x'],
   Optional[String[1]] $image                     = undef,
-  Optional[String[1]] $project                   = undef,
   String[1] $resource_name                       = 'puppetlabs-provision',
   Provision::CloudProvider $provider             = 'aws',
   Provision::InstanceType $instance_size         = 'micro',
@@ -66,9 +72,37 @@ plan provision::create(
   Optional[Integer[1, 10]] $node_count           = 1,
   Optional[Hash[String[1], String[1]]] $tags     = {},
   Optional[Hash[String[1], String[1]]] $provider_options = undef,
+
+  ##GCP Specific Parameters
+  Optional[String[1]] $project                    = undef,
+  Optional[String[1]] $network                    = 'default',
+  Optional[String[1]] $subnetwork                 = 'default',
+  Optional[String[1]] $subnetwork_project         = undef,
 ) {
   out::message('Starting infrastructure provisioning')
   $tf_dir = "terraform/${provider}/"
+
+  # Validate the provider options for GCP
+  if $provider == 'gcp' {
+    $google_credentials = system::env('GOOGLE_CREDENTIALS')
+    $google_application_credentials = system::env('GOOGLE_APPLICATION_CREDENTIALS')
+
+    if  $google_credentials == undef and $google_application_credentials == undef {
+      fail('GOOGLE_CREDENTIALS or GOOGLE_APPLICATION_CREDENTIALS environment variable is required for Google Cloud Provider')
+    } elsif $google_credentials {
+      $profile = $google_credentials
+    } else {
+      $profile = $google_application_credentials
+    }
+
+    if $project == undef {
+      fail('project is required for Google Cloud Provider')
+    }
+
+    if $subnetwork_project == undef {
+      $_subnetwork_project = $project
+    }
+  }
 
   $result = run_plan('provision::terraform::apply', {
       tf_dir                 => $tf_dir,
@@ -85,6 +119,10 @@ plan provision::create(
       tags                   => $tags,
       provider_options       => $provider_options,
       project                => $project,
+      profile                => $profile,
+      network                => $network,
+      subnetwork             => $subnetwork,
+      subnetwork_project     => $_subnetwork_project,
   })
 
   out::message("Completed infrastructure provisioning with ${node_count} servers")

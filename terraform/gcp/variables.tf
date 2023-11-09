@@ -11,6 +11,7 @@ variable "name" {
 variable "instance_size" {
   description = "Machine type to use for the instance"
   type        = string
+  default     = "small"
 }
 
 variable "region" {
@@ -21,11 +22,13 @@ variable "region" {
 variable "node_count" {
   description = "Number of servers to deploy"
   type        = number
+  default     = 1
 }
 
 variable "image" {
   description = "GCP Image to be used for the instance"
   type        = string
+  default     = "debian-cloud/debian-11"
 }
 
 variable "root_block_device_volume_size" {
@@ -60,10 +63,16 @@ variable "subnetwork_project" {
 variable "tags" {
   description = "A list of labels that will be applied to virtual instances"
   type        = map(any)
+  default     = {}
 }
 
 variable "hardware_architecture" {
   description = "Hardware architecture of the instance"
   type        = string
   default     = "amd"
+}
+
+variable "profile" {
+  description = "GCP profile to use"
+  type        = string
 }

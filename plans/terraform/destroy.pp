@@ -18,9 +18,11 @@
 #
 plan provision::terraform::destroy(
   String[1]                    $tf_dir,
-  String[1]                    $resource_name = undef,
-  String[1]                    $profile       = undef,
-  Optional[String[1]]          $region        = undef,
+  String[1]                    $resource_name      = undef,
+  String[1]                    $profile            = undef,
+  Optional[String[1]]          $region             = undef,
+  Optional[String[1]]          $project            = undef,
+  Optional[String[1]]          $subnetwork_project = undef,
 ) {
   out::message('Initializing Terraform to destroy provisioned infrastructure')
   run_task('terraform::initialize', 'localhost', dir => $tf_dir)
@@ -32,6 +34,12 @@ plan provision::terraform::destroy(
     <% } -%>
     # Required parameters which values are irrelevant on destroy
     profile       = "<%= $profile %>"
+    <% unless $project == undef { -%>
+    project       = "<%= $project %>"
+    <% } -%>
+    <% unless $subnetwork_project == undef { -%>
+    subnetwork_project       = "<%= $subnetwork_project %>"
+    <% } -%>
     |TFVARS
 
   $tfvars = inline_epp($vars_template)

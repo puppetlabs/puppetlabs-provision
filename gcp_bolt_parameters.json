@@ -1,0 +1,13 @@
+{
+  "provider": "gcp",
+  "project": "ia-content",
+  "region": "us-west1",
+  "instance_size": "small",
+  "image": "debian-cloud/debian-11",
+  "node_count": 1,
+  "provider_options": {
+    "root_block_device_volume_type": "pd-ssd",
+    "root_block_device_volume_size": "10"
+  }
+}
+
