@@ -8,10 +8,9 @@ variable "name" {
   type        = string
 }
 
-variable "instance_size" {
+variable "machine_type" {
   description = "Machine type to use for the instance"
   type        = string
-  default     = "small"
 }
 
 variable "region" {
@@ -19,60 +18,37 @@ variable "region" {
   type        = string
 }
 
-variable "node_count" {
+variable "server_count" {
   description = "Number of servers to deploy"
   type        = number
-  default     = 1
 }
 
 variable "image" {
   description = "GCP Image to be used for the instance"
   type        = string
-  default     = "debian-cloud/debian-11"
 }
 
-variable "root_block_device_volume_size" {
-  description = "Root block device size in GB"
-  type        = string
-  default     = "10"
+variable "boot_disk_params" {
+  description = "Boot disk device configuration"
+  type        = map(any)
 }
 
-variable "root_block_device_volume_type" {
-  description = "Root block device type"
-  type        = string
-  default     = "pd-ssd"
-}
-
-variable "network" {
+variable network    {
   description = "VPC network provisioned by the networking submodule"
   type        = string
-  default     = "default"
 }
 
-variable "subnetwork" {
+variable subnetwork {
   description = "Regional subnetwork assigned to VPC network provisioned by the networking submodule"
   type        = string
-  default     = "default"
 }
 
-variable "subnetwork_project" {
+variable subnetwork_project {
   description = "Regional subnetwork project assigned to VPC network provisioned by the networking submodule"
   type        = string
 }
 
-variable "tags" {
+variable "labels" {
   description = "A list of labels that will be applied to virtual instances"
-  type        = map(any)
-  default     = {}
-}
-
-variable "hardware_architecture" {
-  description = "Hardware architecture of the instance"
-  type        = string
-  default     = "amd"
-}
-
-variable "profile" {
-  description = "GCP profile to use"
-  type        = string
+  type        = map
 }
