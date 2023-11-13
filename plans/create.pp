@@ -8,8 +8,8 @@
 #   The name of the resource to be provisioned, the same will be use to manage the state of the infrastructure.
 #   So the preference is to use the unit name for the provisioned infrastructure
 #
-# @param instance_type
-#   The instance type to be provisioned, the module will translate the instance type to the cloud provider specific
+# @param instance_size
+#   The instance size to be provisioned, the module will translate the instance size to the cloud provider specific
 #   instance type depending on the provider.
 #
 # @param image
@@ -36,9 +36,6 @@
 #   The number of instance/VMs to be provisioned in the given cloud provider
 #   User can provision mininum of 1 instance and maximum of 10 instances at a time.
 #
-# @param associate_public_ip
-#   Associate a public IP address with an instance in VPC/Network
-#
 # @param provider_options
 #   The list of cloud provider options to be passed to the provisioning module
 #   Eg: 
@@ -47,45 +44,59 @@
 #       "profile": "default",                   # AWS profile name
 #       "ssh_key_name": "ssh_key_name",         # The SSH key-pair name for provisioning the instance.
 #       "root_block_device_volume_type": "gp3", # The type of the root block device.
-#       "root_block_device_volume_size": 10     # The volume size of the root block device in GB.
+#       "root_block_device_volume_size": 10,     # The volume size of the root block device in GB.
+#       "associate_public_ip_address": true             # Associate a public IP address to provisioned instance.
 #     }
 #
 #     These settings allow you to customize the provisioning process based on cloud provider and specific requirements.
+#
+# @param pe_server
+#   The The PE server to be used for pointing the VM's puppet agent to
+#
+# @param environment
+#   The puppet environment to place the agent in
+#
+# @param os_type
+#   The type of operating system (linux or windows) to be used for provisioning the VMs
 #
 plan provision::create(
   String[1] $subnet,
   Array[String[1]] $security_group_ids,
   Optional[String[1]] $image                     = undef,
-  String[1] $resource_name                       = 'puppetlabs-provision',
+  String[1] $resource_name                       = 'provision',
   Provision::CloudProvider $provider             = 'aws',
   Provision::InstanceType $instance_size         = 'micro',
   Provision::HardwareArchitecture $hardware_architecture = 'amd',
   String[1] $region                              = 'us-west-2',
-  Optional[Boolean] $associate_public_ip         = false,
   Optional[Integer[1, 10]] $node_count           = 1,
   Optional[Hash[String[1], String[1]]] $tags     = {},
-  Optional[Hash[String[1], String[1]]] $provider_options = undef,
+  Optional[String[1]] $pe_server                 = undef,
+  Optional[String[1]] $environment               = 'production',
+  Optional[Enum['linux', 'windows']] $os_type    = 'linux',
+  Optional[Provision::ProviderOptions] $provider_options = undef,
 ) {
   out::message('Starting infrastructure provisioning')
   $tf_dir = "terraform/${provider}/"
+
+  $_resource_name = "${resource_name}-${Timestamp.new().strftime('%Y%m%d%H%M%S')}"
 
   $result = run_plan('provision::terraform::apply', {
       tf_dir                 => $tf_dir,
       provider               => $provider,
       hardware_architecture  => $hardware_architecture,
-      resource_name          => $resource_name,
+      resource_name          => $_resource_name,
       instance_size          => $instance_size,
       image                  => $image,
       region                 => $region,
       node_count             => $node_count,
       subnet                 => $subnet,
       security_group_ids     => $security_group_ids,
-      associate_public_ip    => $associate_public_ip,
       tags                   => $tags,
       provider_options       => $provider_options,
+      environment            => $environment,
+      pe_server              => $pe_server,
+      os_type                => $os_type,
   })
 
   out::message("Completed infrastructure provisioning with ${node_count} servers")
-
-  return $result[0].value
 }

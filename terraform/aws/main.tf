@@ -26,8 +26,7 @@ locals {
   image_metadata = split("/", var.image)
   # get the image name & owner name from provided image value
   image_name                    = try(local.image_metadata[1], local.image_metadata[0])
-  image_owner                   = try(local.image_metadata[0], "*")
-  root_block_device_volume_size = tonumber(var.root_block_device_volume_size)
+  image_owner                   = length(local.image_metadata) > 1 ? local.image_metadata[0] : "*"
 }
 
 # Contain all the instances configuration for readability
@@ -45,8 +44,11 @@ module "instances" {
   image_architecture          = data.hiera5.image_architecture.value
   associate_public_ip_address = var.associate_public_ip_address
   tags                        = var.tags
+  pe_server                   = var.pe_server
+  os_type                     = var.os_type
+  environment                 = var.environment
   root_block_device = {
     volume_type = var.root_block_device_volume_type
-    volume_size = local.root_block_device_volume_size
+    volume_size = var.root_block_device_volume_size
   }
 }
