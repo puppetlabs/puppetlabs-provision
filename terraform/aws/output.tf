@@ -8,7 +8,7 @@ output "instance_private_dns" {
   description = "The private DNS of the provisioned node(s)"
 }
 
-output "private_ip" {
+output "instance_private_ips" {
   value       = module.instances.private_ips
   description = "The private IPs address of the provisioned node(s)"
 }

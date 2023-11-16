@@ -1,6 +1,6 @@
 provider "google" {
-  project = var.project
-  region  = var.region
+  project     = var.project
+  region      = var.region
   credentials = var.profile
 }
 
@@ -30,4 +30,7 @@ module "instances" {
   subnetwork         = var.subnetwork
   subnetwork_project = var.subnetwork_project
   region             = var.region
+  environment        = var.environment
+  os_type            = var.os_type
+  pe_server          = var.pe_server
 }

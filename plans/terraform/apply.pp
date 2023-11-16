@@ -77,11 +77,12 @@ plan provision::terraform::apply(
   Optional[Enum['linux', 'windows']] $os_type,
   Optional[Provision::ProviderOptions] $provider_options,
   Optional[String[1]] $project,
-  Optional[String[1]] $profile,
-  Optional[String[1]] $network,
-  Optional[String[1]] $subnetwork,
-  Optional[String[1]] $subnetwork_project,
 ) {
+  if $provider == 'gcp' {
+    $profile = provision::get_gcp_profile($project)
+  } else {
+    $profile = undef
+  }
   # Ensure the Terraform project directory has been initialized ahead of
   # attempting an apply
   out::message('Initializing Terraform for provisioning')
@@ -104,9 +105,6 @@ plan provision::terraform::apply(
       os_type                => $os_type,
       project                => $project,
       profile                => $profile,
-      network                => $network,
-      subnetwork             => $subnetwork,
-      subnetwork_project     => $subnetwork_project,
   })
 
   out::message('Applying terraform plan to provison instance')

@@ -13,9 +13,6 @@
       Optional[Enum['linux', 'windows']]   $os_type,
       Optional[String[1]]                  $project,
       Optional[String[1]]                  $profile,
-      Optional[String[1]]                  $network,
-      Optional[String[1]]                  $subnetwork,
-      Optional[String[1]]                  $subnetwork_project,
 | -%>
 # Mapping all the plan parameters to their corresponding Terraform vars
 #
@@ -75,12 +72,3 @@ project                  = "<%= $project %>"
 <%- if $profile != undef { -%>
 profile = "<%= $profile %>"
 <%- } -%>
-<%- if $network != undef { -%>
-network = "<%= $network %>"
-<%- } %>
-<%- if $subnetwork != undef { -%>
-subnetwork = "<%= $subnetwork %>"
-<%- } %>
-<%- if $subnetwork_project != undef { -%>
-subnetwork_project = "<%= $subnetwork_project %>"
-<%- } %>

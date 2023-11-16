@@ -33,22 +33,37 @@ variable "boot_disk_params" {
   type        = map(any)
 }
 
-variable network    {
+variable "network" {
   description = "VPC network provisioned by the networking submodule"
   type        = string
 }
 
-variable subnetwork {
+variable "subnetwork" {
   description = "Regional subnetwork assigned to VPC network provisioned by the networking submodule"
   type        = string
 }
 
-variable subnetwork_project {
+variable "subnetwork_project" {
   description = "Regional subnetwork project assigned to VPC network provisioned by the networking submodule"
   type        = string
 }
 
 variable "labels" {
   description = "A list of labels that will be applied to virtual instances"
-  type        = map
+  type        = map(any)
+}
+
+variable "pe_server" {
+  description = "The PE server endpoint to run the puppet agent"
+  type        = string
+}
+
+variable "os_type" {
+  description = "The type of OS (windows or linux) to configure the puppet agent using bootstrap script"
+  type        = string
+}
+
+variable "environment" {
+  description = "The puppet environment to configure the puppet agent"
+  type        = string
 }
