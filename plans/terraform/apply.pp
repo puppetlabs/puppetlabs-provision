@@ -79,7 +79,7 @@ plan provision::terraform::apply(
   Optional[String[1]] $project,
 ) {
   if $provider == 'gcp' {
-    $profile = provision::get_gcp_profile($project)
+    $profile = provision::gcp_profile()
   } else {
     $profile = undef
   }

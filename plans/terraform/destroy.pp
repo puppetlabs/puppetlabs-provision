@@ -34,7 +34,7 @@ plan provision::terraform::destroy(
       $profile = 'default'
     }
   } elsif $provider == 'gcp' {
-    $profile = provision::get_gcp_profile($project)
+    $profile = provision::gcp_profile()
   }
 
   $vars_template = @(TFVARS)

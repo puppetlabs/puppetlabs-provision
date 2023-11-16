@@ -1,5 +1,5 @@
 variable "project" {
-  description = "Name of GCP project that will be used for housing require infrastructure"
+  description = "Name of GCP project that will be used for the required infrastructure"
   type        = string
 }
 
@@ -20,7 +20,7 @@ variable "region" {
 }
 
 variable "node_count" {
-  description = "Number of servers to deploy"
+  description = "Number of instances to provision"
   type        = number
   default     = 1
 }
