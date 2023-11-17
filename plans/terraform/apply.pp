@@ -67,8 +67,8 @@ plan provision::terraform::apply(
   Provision::HardwareArchitecture $hardware_architecture,
   String[1] $resource_name,
   String[1] $region,
-  String[1] $subnet,
-  Array[String[1]] $security_group_ids,
+  Optional[String[1]] $subnet,
+  Optional[Array[String[1]]] $security_group_ids,
   Optional[Integer[1, 10]] $node_count,
   Optional[String[1]] $image,
   Optional[Hash[String[1], String[1]]] $tags,
@@ -76,7 +76,13 @@ plan provision::terraform::apply(
   Optional[String[1]] $environment,
   Optional[Enum['linux', 'windows']] $os_type,
   Optional[Provision::ProviderOptions] $provider_options,
+  Optional[String[1]] $project,
 ) {
+  if $provider == 'gcp' {
+    $profile = provision::gcp_profile()
+  } else {
+    $profile = undef
+  }
   # Ensure the Terraform project directory has been initialized ahead of
   # attempting an apply
   out::message('Initializing Terraform for provisioning')
@@ -97,6 +103,8 @@ plan provision::terraform::apply(
       pe_server              => $pe_server,
       environment            => $environment,
       os_type                => $os_type,
+      project                => $project,
+      profile                => $profile,
   })
 
   out::message('Applying terraform plan to provison instance')

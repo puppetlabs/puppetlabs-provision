@@ -1,6 +1,9 @@
-# Output data used by Bolt to do further work, doing this allows for a clean and
-# abstracted interface between cloud provider implementations
 output "public_ip" {
-  value       = module.instances.console
-  description = "This will by the external IP address assigned to the Puppet Enterprise console"
+  value       = module.instances.public_ips
+  description = "The public IPs address of the provisioned node(s)"
+}
+
+output "private_ip" {
+  value       = module.instances.private_ips
+  description = "The private IPs address of the provisioned node(s)"
 }

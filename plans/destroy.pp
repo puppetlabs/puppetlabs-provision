@@ -15,9 +15,10 @@
 #
 plan provision::destroy(
   Provision::CloudProvider  $provider          = 'aws',
-  String[1]                 $resource_name     = 'provision',
+  String[1]                 $resource_name,
   Optional[String[1]]       $region            = 'us-west-2',
-  Provision::ProviderOptions $provider_options = undef,
+  Optional[Provision::ProviderOptions] $provider_options = undef,
+  Optional[String[1]]       $project            = undef,
 ) {
   $_tf_dir = "terraform/${provider}/"
 
@@ -27,8 +28,9 @@ plan provision::destroy(
       tf_dir           => $_tf_dir,
       provider         => $provider,
       resource_name    => $resource_name,
-      region           => $region,
       provider_options => $provider_options,
+      region           => $region,
+      project          => $project,
   })
   out::message('Provisioned infrastructure successfully destroyed')
 }

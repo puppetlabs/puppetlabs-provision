@@ -49,7 +49,16 @@
 #     }
 #
 #     These settings allow you to customize the provisioning process based on cloud provider and specific requirements.
-#
+#   Eg:
+#     For instance, when configuring options for GCP, you can include the following settings:
+#     {
+#       "root_block_device_volume_type": "pd-ssd", # Boot Disk Type.
+#       "root_block_device_volume_size": 10     # Boot Disk Size.
+#       "network": "<network-name-on-gcp>"
+#       "subnetwork": "<subnetwork-name-on-gcp>"
+#       "subnetwork_project": "<subnetwork-project-on-gcp>"
+#     }
+#   
 # @param pe_server
 #   The The PE server to be used for pointing the VM's puppet agent to
 #
@@ -60,8 +69,8 @@
 #   The type of operating system (linux or windows) to be used for provisioning the VMs
 #
 plan provision::create(
-  String[1] $subnet,
-  Array[String[1]] $security_group_ids,
+  Optional[String[1]] $subnet = undef,
+  Optional[Array[String[1]]] $security_group_ids = undef,
   Optional[String[1]] $image                     = undef,
   String[1] $resource_name                       = 'provision',
   Provision::CloudProvider $provider             = 'aws',
@@ -74,6 +83,9 @@ plan provision::create(
   Optional[String[1]] $environment               = 'production',
   Optional[Enum['linux', 'windows']] $os_type    = 'linux',
   Optional[Provision::ProviderOptions] $provider_options = undef,
+
+  ##GCP Specific Parameters
+  Optional[String[1]] $project                    = undef,
 ) {
   out::message('Starting infrastructure provisioning')
   $tf_dir = "terraform/${provider}/"
@@ -96,6 +108,7 @@ plan provision::create(
       environment            => $environment,
       pe_server              => $pe_server,
       os_type                => $os_type,
+      project                => $project,
   })
 
   out::message("Completed infrastructure provisioning with ${node_count} servers")

@@ -8,9 +8,11 @@
       Optional[String[1]]                  $image,
       Optional[Integer]                    $node_count,
       Optional[Provision::ProviderOptions] $provider_options,
-      String[1]                            $environment,
-      String[1]                            $pe_server,
-      String[1]                            $os_type,
+      Optional[String[1]]                  $environment,
+      Optional[String[1]]                  $pe_server,
+      Optional[Enum['linux', 'windows']]   $os_type,
+      Optional[String[1]]                  $project,
+      Optional[String[1]]                  $profile,
 | -%>
 # Mapping all the plan parameters to their corresponding Terraform vars
 #
@@ -63,4 +65,10 @@ environment           = "<%= $environment %>"
 <%- } -%>
 <%- unless $os_type == undef {-%>
 os_type               = "<%= $os_type %>"
+<%- } -%>
+<%- if $project != undef { -%>
+project                  = "<%= $project %>"
+<%- } -%>
+<%- if $profile != undef { -%>
+profile = "<%= $profile %>"
 <%- } -%>
