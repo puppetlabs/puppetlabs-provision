@@ -42,7 +42,6 @@
 #   Eg: 
 #     For instance, when configuring options for AWS, you can include the following settings:
 #     {
-#       "profile": "default",                   # AWS profile name
 #       "ssh_key_name": "access_key",           # The SSH key name for provisioning the instance.
 #       "root_block_device_volume_type": "gp3", # The type of the root block device.
 #       "root_block_device_volume_size": 10,     # The volume size of the root block device in GB.
@@ -66,7 +65,7 @@ plan provision::terraform::apply(
   Provision::InstanceType $instance_size,
   Provision::HardwareArchitecture $hardware_architecture,
   String[1] $resource_name,
-  String[1] $region,
+  Optional[String[1]] $region,
   Optional[String[1]] $subnet,
   Optional[Array[String[1]]] $security_group_ids,
   Optional[Integer[1, 10]] $node_count,
@@ -78,6 +77,12 @@ plan provision::terraform::apply(
   Optional[Provision::ProviderOptions] $provider_options,
   Optional[String[1]] $project,
 ) {
+  # Prechecks
+  # General prechecks
+  if $pe_server == undef {
+    log::warn('pe_server value is undef, will not able to configure the provisioned node.')
+  }
+  # GCP prechecks
   if $provider == 'gcp' {
     $profile = provision::gcp_profile()
   } else {

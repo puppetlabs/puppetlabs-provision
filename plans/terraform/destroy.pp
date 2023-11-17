@@ -13,8 +13,8 @@
 # @param resource_name
 #   The name of the resource to be provisioned on respective cloud provider
 #
-# @param profile
-#   The name of the profile to be used for provisioning
+# @param provider
+#   The cloud provider to use for provisioning, valid values are 'aws', 'azure' and 'gcp'
 #
 plan provision::terraform::destroy(
   String[1]                    $tf_dir,
@@ -27,13 +27,7 @@ plan provision::terraform::destroy(
   out::message('Initializing Terraform to destroy provisioned infrastructure')
   run_task('terraform::initialize', 'localhost', dir => $tf_dir)
 
-  if $provider == 'aws' {
-    if $provider_options != undef and $provider_options['profile'] != undef {
-      $profile = $provider_options['profile']
-    } else {
-      $profile = 'default'
-    }
-  } elsif $provider == 'gcp' {
+  if $provider == 'gcp' {
     $profile = provision::gcp_profile()
   }
 
@@ -43,7 +37,7 @@ plan provision::terraform::destroy(
     region        = "<%= $region %>"
     <% } -%>
     # Required parameters which values are irrelevant on destroy
-    <%- if $provider == 'aws' or $provider == 'gcp' { -%>
+    <%- if $provider == 'gcp' { -%>
     profile       = "<%= $profile %>"
     <%- } -%>
     <% unless $project == undef { -%>

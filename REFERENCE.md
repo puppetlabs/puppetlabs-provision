@@ -7,26 +7,30 @@
 ### Classes
 
 * [`provision`](#provision): Installs the provisioning tool (Terraform) on the target node
-* [`provision::aws_config`](#provision--aws_config): Manifest to configure the pre-requisites for puppetlabs-provision module
 
 ### Functions
 
-* [`provision::map_image_architecture`](#provision--map_image_architecture): The function to map the human readable instance type to the Cloud provider instance type
-* [`provision::map_instance_type`](#provision--map_instance_type): The function to map the human readable instance type to the Cloud provider instance type
+* [`provision::gcp_profile`](#provision--gcp_profile)
 * [`provision::with_tempfile_containing`](#provision--with_tempfile_containing)
 
 ### Data types
 
-* [`Provision::Architecture`](#Provision--Architecture): This custom type is used to manage the list of architecture of a provisioned node.
 * [`Provision::CloudProvider`](#Provision--CloudProvider): This custom type is used to manage the list of cloud providers.
+* [`Provision::HardwareArchitecture`](#Provision--HardwareArchitecture): This custom type is used to manage the list of architecture of a provisioned node.
 * [`Provision::InstanceType`](#Provision--InstanceType): This custom type is used to manage the list of instance type to provisioned node.
+* [`Provision::ProviderOptions`](#Provision--ProviderOptions): This custom type is used to manage the list of provider specific parameters.
 
 ### Plans
 
+#### Public Plans
+
 * [`provision::create`](#provision--create): Plan to provision a Virtual Machine in different cloud providers (GCP, AWS & Azure)
 * [`provision::destroy`](#provision--destroy): Destroy a earlier provisioned virtual machine
-* [`provision::terraform::apply`](#provision--terraform--apply): Plan to provision a Virtual Machine using Terraform for different cloud providers (GCP, AWS & Azure)
-* [`provision::terraform::destroy`](#provision--terraform--destroy): Destroy a earlier provisioned virtual machine using terraform
+
+#### Private Plans
+
+* `provision::terraform::apply`: Plan to provision a Virtual Machine using Terraform for different cloud providers (GCP, AWS & Azure)
+* `provision::terraform::destroy`: Destroy a earlier provisioned virtual machine using terraform
 
 ## Classes
 
@@ -48,107 +52,19 @@ The version of Terraform to install
 
 Default value: `'1.5.7'`
 
-### <a name="provision--aws_config"></a>`provision::aws_config`
-
-Manifest to configure the pre-requisites for puppetlabs-provision module
-
-#### Parameters
-
-The following parameters are available in the `provision::aws_config` class:
-
-* [`access_key_id`](#-provision--aws_config--access_key_id)
-* [`secret_access_key`](#-provision--aws_config--secret_access_key)
-* [`session_token`](#-provision--aws_config--session_token)
-* [`profile`](#-provision--aws_config--profile)
-
-##### <a name="-provision--aws_config--access_key_id"></a>`access_key_id`
-
-Data type: `Optional[String[1]]`
-
-Optional IAM access key with EC2 privileges
-
-Default value: `undef`
-
-##### <a name="-provision--aws_config--secret_access_key"></a>`secret_access_key`
-
-Data type: `Optional[String[1]]`
-
-Optional IAM secret access key associated with the access key ID
-
-Default value: `undef`
-
-##### <a name="-provision--aws_config--session_token"></a>`session_token`
-
-Data type: `Optional[String[1]]`
-
-Optional session token for AWS STS credentials, as the STS credentials are bound with time so this
-parameter is not supported with Hiera configurations.
-
-Default value: `undef`
-
-##### <a name="-provision--aws_config--profile"></a>`profile`
-
-Data type: `String[1]`
-
-Optional profile name to use for credentials
-
-Default value: `'default'`
-
 ## Functions
 
-### <a name="provision--map_image_architecture"></a>`provision::map_image_architecture`
+### <a name="provision--gcp_profile"></a>`provision::gcp_profile`
 
 Type: Puppet Language
 
-The function to map the human readable instance type to the Cloud provider instance type
+The provision::gcp_profile function.
 
-#### `provision::map_image_architecture(Provision::CloudProvider $cloud, Provision::Architecture $architecture)`
+#### `provision::gcp_profile()`
 
-The provision::map_image_architecture function.
+The provision::gcp_profile function.
 
-Returns: `String` The type of architecture of the image
-
-##### `cloud`
-
-Data type: `Provision::CloudProvider`
-
-The type of cloud provider
-
-##### `architecture`
-
-Data type: `Provision::Architecture`
-
-The architecture of the image
-
-### <a name="provision--map_instance_type"></a>`provision::map_instance_type`
-
-Type: Puppet Language
-
-The function to map the human readable instance type to the Cloud provider instance type
-
-#### `provision::map_instance_type(Provision::CloudProvider $cloud, String[1] $instance_type, Provision::Architecture $architecture)`
-
-The provision::map_instance_type function.
-
-Returns: `String` A instance type mapped to the respective cloud provider
-
-##### `cloud`
-
-Data type: `Provision::CloudProvider`
-
-The cloud provider
-
-##### `instance_type`
-
-Data type: `String[1]`
-
-The human readable instance type
-
-##### `architecture`
-
-Data type: `Provision::Architecture`
-
-The architecture of the instance
+Returns: `String`
 
 ### <a name="provision--with_tempfile_containing"></a>`provision::with_tempfile_containing`
 
@@ -188,23 +104,29 @@ Data type: `Callable[1, 1]`
 
 ## Data types
 
-### <a name="Provision--Architecture"></a>`Provision::Architecture`
-
-This custom type is used to manage the list of architecture of a provisioned node.
-
-Alias of `Enum['arm', 'amd', 'intel']`
-
 ### <a name="Provision--CloudProvider"></a>`Provision::CloudProvider`
 
 This custom type is used to manage the list of cloud providers.
 
 Alias of `Enum['gcp', 'aws', 'azure']`
 
+### <a name="Provision--HardwareArchitecture"></a>`Provision::HardwareArchitecture`
+
+This custom type is used to manage the list of architecture of a provisioned node.
+
+Alias of `Enum['arm', 'amd', 'intel']`
+
 ### <a name="Provision--InstanceType"></a>`Provision::InstanceType`
 
 This custom type is used to manage the list of instance type to provisioned node.
 
-Alias of `Enum['xlarge', 'large', 'medium', 'small', 'micro']`
+Alias of `Enum['xlarge', 'large', 'standard', 'small', 'micro']`
+
+### <a name="Provision--ProviderOptions"></a>`Provision::ProviderOptions`
+
+This custom type is used to manage the list of provider specific parameters.
+
+Alias of `Hash[String[1], Variant[String[1], Integer, Boolean]]`
 
 ## Plans
 
@@ -218,19 +140,19 @@ The following parameters are available in the `provision::create` plan:
 
 * [`provider`](#-provision--create--provider)
 * [`resource_name`](#-provision--create--resource_name)
-* [`instance_type`](#-provision--create--instance_type)
+* [`instance_size`](#-provision--create--instance_size)
 * [`image`](#-provision--create--image)
 * [`region`](#-provision--create--region)
-* [`ssh_key_name`](#-provision--create--ssh_key_name)
 * [`subnet`](#-provision--create--subnet)
 * [`security_group_ids`](#-provision--create--security_group_ids)
-* [`profile`](#-provision--create--profile)
 * [`tags`](#-provision--create--tags)
-* [`root_block_device_size`](#-provision--create--root_block_device_size)
-* [`root_block_volume_type`](#-provision--create--root_block_volume_type)
 * [`node_count`](#-provision--create--node_count)
-* [`associate_public_ip`](#-provision--create--associate_public_ip)
-* [`architecture`](#-provision--create--architecture)
+* [`provider_options`](#-provision--create--provider_options)
+* [`pe_server`](#-provision--create--pe_server)
+* [`environment`](#-provision--create--environment)
+* [`os_type`](#-provision--create--os_type)
+* [`hardware_architecture`](#-provision--create--hardware_architecture)
+* [`project`](#-provision--create--project)
 
 ##### <a name="-provision--create--provider"></a>`provider`
 
@@ -247,13 +169,13 @@ Data type: `String[1]`
 The name of the resource to be provisioned, the same will be use to manage the state of the infrastructure.
 So the preference is to use the unit name for the provisioned infrastructure
 
-Default value: `'puppetlabs-provision'`
+Default value: `'provision'`
 
-##### <a name="-provision--create--instance_type"></a>`instance_type`
+##### <a name="-provision--create--instance_size"></a>`instance_size`
 
 Data type: `Provision::InstanceType`
 
-The instance type to be provisioned, the module will translate the instance type to the cloud provider specific
+The instance size to be provisioned, the module will translate the instance size to the cloud provider specific
 instance type depending on the provider.
 
 Default value: `'micro'`
@@ -262,32 +184,26 @@ Default value: `'micro'`
 
 Data type: `Optional[String[1]]`
 
-The cloud image that is used for new instance provisioning, format differs
+The cloud image that is used for new instance provisioning, the format of image varies
 depending on provider
+AWS : For AWS, the image name pattern can include both with and without an account ID prefix.
+  For example, without the account ID prefix, it can be "AlmaLinux OS 8.8*," and
+  with the account ID prefix, it can be "764336703387/AlmaLinux OS 8.8*."
 
 Default value: `undef`
 
 ##### <a name="-provision--create--region"></a>`region`
 
-Data type: `String[1]`
+Data type: `Optional[String[1]]`
 
 Which region to provision infrastructure in, if not provided default will
 be determined by provider
-
-Default value: `'us-west-2'`
-
-##### <a name="-provision--create--ssh_key_name"></a>`ssh_key_name`
-
-Data type: `String[1]`
-
-The SSH key name to be provisioned & access the machine.
-The name of the SSH key which should already exist in the cloud and which will be used to access the provisioned instances.
 
 Default value: `undef`
 
 ##### <a name="-provision--create--subnet"></a>`subnet`
 
-Data type: `String[1]`
+Data type: `Optional[String[1]]`
 
 Name or ID of an existing subnet to attach newly provisioned VMs to
 
@@ -295,17 +211,9 @@ Default value: `undef`
 
 ##### <a name="-provision--create--security_group_ids"></a>`security_group_ids`
 
-Data type: `Array[String[1]]`
+Data type: `Optional[Array[String[1]]]`
 
 The list of security groups which will be attached to the newly provisioned VMs
-
-Default value: `undef`
-
-##### <a name="-provision--create--profile"></a>`profile`
-
-Data type: `String[1]`
-
-The name of the profile to be used for provisioning
 
 Default value: `undef`
 
@@ -317,45 +225,81 @@ The list of tags to be attached to the newly provisioned VMs
 
 Default value: `{}`
 
-##### <a name="-provision--create--root_block_device_size"></a>`root_block_device_size`
-
-Data type: `Integer[10, 100]`
-
-The volume size of the root block device in GB
-
-Default value: `10`
-
-##### <a name="-provision--create--root_block_volume_type"></a>`root_block_volume_type`
-
-Data type: `String[1]`
-
-The type of the root block device to attached to launched instance
-
-Default value: `'gp3'`
-
 ##### <a name="-provision--create--node_count"></a>`node_count`
 
-Data type: `Integer[1,10]`
+Data type: `Optional[Integer[1, 10]]`
 
 The number of instance/VMs to be provisioned in the given cloud provider
+User can provision mininum of 1 instance and maximum of 10 instances at a time.
 
 Default value: `1`
 
-##### <a name="-provision--create--associate_public_ip"></a>`associate_public_ip`
+##### <a name="-provision--create--provider_options"></a>`provider_options`
 
-Data type: `Optional[Boolean]`
+Data type: `Optional[Provision::ProviderOptions]`
 
-Associate a public IP address with an instance in VPC/Network
+The list of cloud provider options to be passed to the provisioning module
+Eg:
+  For instance, when configuring options for AWS, you can include the following settings:
+  {
+    "ssh_key_name": "ssh_key_name",         # The SSH key-pair name for provisioning the instance.
+    "root_block_device_volume_type": "gp3", # The type of the root block device.
+    "root_block_device_volume_size": 10,     # The volume size of the root block device in GB.
+    "associate_public_ip_address": true             # Associate a public IP address to provisioned instance.
+  }
 
-Default value: `false`
+  These settings allow you to customize the provisioning process based on cloud provider and specific requirements.
+Eg:
+  For instance, when configuring options for GCP, you can include the following settings:
+  {
+    "root_block_device_volume_type": "pd-ssd", # Boot Disk Type.
+    "root_block_device_volume_size": 10     # Boot Disk Size.
+    "network": "<network-name-on-gcp>"
+    "subnetwork": "<subnetwork-name-on-gcp>"
+    "subnetwork_project": "<subnetwork-project-on-gcp>"
+  }
 
-##### <a name="-provision--create--architecture"></a>`architecture`
+Default value: `undef`
 
-Data type: `Provision::Architecture`
+##### <a name="-provision--create--pe_server"></a>`pe_server`
+
+Data type: `Optional[String[1]]`
+
+The The PE server to be used for pointing the VM's puppet agent to
+
+Default value: `undef`
+
+##### <a name="-provision--create--environment"></a>`environment`
+
+Data type: `Optional[String[1]]`
+
+The puppet environment to place the agent in
+
+Default value: `'production'`
+
+##### <a name="-provision--create--os_type"></a>`os_type`
+
+Data type: `Optional[Enum['linux', 'windows']]`
+
+The type of operating system (linux or windows) to be used for provisioning the VMs
+
+Default value: `'linux'`
+
+##### <a name="-provision--create--hardware_architecture"></a>`hardware_architecture`
+
+Data type: `Provision::HardwareArchitecture`
 
 
 
 Default value: `'amd'`
+
+##### <a name="-provision--create--project"></a>`project`
+
+Data type: `Optional[String[1]]`
+
+
+
+Default value: `undef`
 
 ### <a name="provision--destroy"></a>`provision::destroy`
 
@@ -368,7 +312,8 @@ The following parameters are available in the `provision::destroy` plan:
 * [`provider`](#-provision--destroy--provider)
 * [`region`](#-provision--destroy--region)
 * [`resource_name`](#-provision--destroy--resource_name)
-* [`profile`](#-provision--destroy--profile)
+* [`provider_options`](#-provision--destroy--provider_options)
+* [`project`](#-provision--destroy--project)
 
 ##### <a name="-provision--destroy--provider"></a>`provider`
 
@@ -385,7 +330,7 @@ Data type: `Optional[String[1]]`
 Which region to provision infrastructure in, if not provided default will
 be determined by provider
 
-Default value: `'us-west-2'`
+Default value: `undef`
 
 ##### <a name="-provision--destroy--resource_name"></a>`resource_name`
 
@@ -393,213 +338,19 @@ Data type: `String[1]`
 
 The name of the resource to be provisioned on respective cloud provider
 
-Default value: `'puppetlabs-provision'`
+##### <a name="-provision--destroy--provider_options"></a>`provider_options`
 
-##### <a name="-provision--destroy--profile"></a>`profile`
+Data type: `Optional[Provision::ProviderOptions]`
 
-Data type: `String[1]`
-
-The name of the profile to be used for provisioning
+A hash of provider specific options to be passed to the Terraform provider
 
 Default value: `undef`
 
-### <a name="provision--terraform--apply"></a>`provision::terraform::apply`
-
-Plan to provision a Virtual Machine using Terraform for different cloud providers (GCP, AWS & Azure)
-
-#### Parameters
-
-The following parameters are available in the `provision::terraform::apply` plan:
-
-* [`tf_dir`](#-provision--terraform--apply--tf_dir)
-* [`resource_name`](#-provision--terraform--apply--resource_name)
-* [`instance_type`](#-provision--terraform--apply--instance_type)
-* [`image`](#-provision--terraform--apply--image)
-* [`region`](#-provision--terraform--apply--region)
-* [`ssh_key_name`](#-provision--terraform--apply--ssh_key_name)
-* [`subnet`](#-provision--terraform--apply--subnet)
-* [`security_group_ids`](#-provision--terraform--apply--security_group_ids)
-* [`profile`](#-provision--terraform--apply--profile)
-* [`tags`](#-provision--terraform--apply--tags)
-* [`root_block_device_size`](#-provision--terraform--apply--root_block_device_size)
-* [`root_block_volume_type`](#-provision--terraform--apply--root_block_volume_type)
-* [`node_count`](#-provision--terraform--apply--node_count)
-* [`provider`](#-provision--terraform--apply--provider)
-* [`architecture`](#-provision--terraform--apply--architecture)
-* [`associate_public_ip`](#-provision--terraform--apply--associate_public_ip)
-
-##### <a name="-provision--terraform--apply--tf_dir"></a>`tf_dir`
-
-Data type: `String[1]`
-
-The directory where the Terraform module is located
-
-Default value: `undef`
-
-##### <a name="-provision--terraform--apply--resource_name"></a>`resource_name`
-
-Data type: `String[1]`
-
-The name of the resource to be provisioned
-
-Default value: `undef`
-
-##### <a name="-provision--terraform--apply--instance_type"></a>`instance_type`
-
-Data type: `Provision::InstanceType`
-
-The instance type to be provisioned
-
-Default value: `'micro'`
-
-##### <a name="-provision--terraform--apply--image"></a>`image`
+##### <a name="-provision--destroy--project"></a>`project`
 
 Data type: `Optional[String[1]]`
 
-The cloud image that is used for new instance provisioning, format differs
-depending on provider
 
-Default value: `undef`
-
-##### <a name="-provision--terraform--apply--region"></a>`region`
-
-Data type: `String[1]`
-
-Which region to provision infrastructure in, if not provided default will
-be determined by provider
-
-Default value: `undef`
-
-##### <a name="-provision--terraform--apply--ssh_key_name"></a>`ssh_key_name`
-
-Data type: `String[1]`
-
-The SSH key name to be used to provision the instance & once the instance gets provisioned
-user will use this key to login to the instance.
-
-Default value: `undef`
-
-##### <a name="-provision--terraform--apply--subnet"></a>`subnet`
-
-Data type: `String[1]`
-
-Name or ID of an existing subnet to attach newly provisioned VMs
-
-Default value: `undef`
-
-##### <a name="-provision--terraform--apply--security_group_ids"></a>`security_group_ids`
-
-Data type: `Array[String[1]]`
-
-The list of security group which will be attached to the newly provisioned VMs
-
-Default value: `[]`
-
-##### <a name="-provision--terraform--apply--profile"></a>`profile`
-
-Data type: `String[1]`
-
-The name of the profile to be used for provisioning
-
-Default value: `undef`
-
-##### <a name="-provision--terraform--apply--tags"></a>`tags`
-
-Data type: `Optional[Hash[String[1], String[1]]]`
-
-The list of tags to be attached to the newly provisioned VMs
-
-Default value: `{}`
-
-##### <a name="-provision--terraform--apply--root_block_device_size"></a>`root_block_device_size`
-
-Data type: `Integer[10, 100]`
-
-The volume size of the root block device in GB
-
-Default value: `10`
-
-##### <a name="-provision--terraform--apply--root_block_volume_type"></a>`root_block_volume_type`
-
-Data type: `String[1]`
-
-The type of the root block device to attached to launched instance
-
-Default value: `'gp3'`
-
-##### <a name="-provision--terraform--apply--node_count"></a>`node_count`
-
-Data type: `Integer[1,10]`
-
-The number of instance/VMs to be provisioned in the given cloud provider
-
-Default value: `1`
-
-##### <a name="-provision--terraform--apply--provider"></a>`provider`
-
-Data type: `Provision::CloudProvider`
-
-
-
-Default value: `'aws'`
-
-##### <a name="-provision--terraform--apply--architecture"></a>`architecture`
-
-Data type: `Provision::Architecture`
-
-
-
-Default value: `'intel'`
-
-##### <a name="-provision--terraform--apply--associate_public_ip"></a>`associate_public_ip`
-
-Data type: `Optional[Boolean]`
-
-
-
-Default value: `false`
-
-### <a name="provision--terraform--destroy"></a>`provision::terraform::destroy`
-
-Destroy a earlier provisioned virtual machine using terraform
-
-#### Parameters
-
-The following parameters are available in the `provision::terraform::destroy` plan:
-
-* [`tf_dir`](#-provision--terraform--destroy--tf_dir)
-* [`region`](#-provision--terraform--destroy--region)
-* [`resource_name`](#-provision--terraform--destroy--resource_name)
-* [`profile`](#-provision--terraform--destroy--profile)
-
-##### <a name="-provision--terraform--destroy--tf_dir"></a>`tf_dir`
-
-Data type: `String[1]`
-
-Terraform directory where the plan is located
-
-##### <a name="-provision--terraform--destroy--region"></a>`region`
-
-Data type: `Optional[String[1]]`
-
-Which region to provision infrastructure in, if not provided default will
-be determined by provider
-
-Default value: `undef`
-
-##### <a name="-provision--terraform--destroy--resource_name"></a>`resource_name`
-
-Data type: `String[1]`
-
-The name of the resource to be provisioned on respective cloud provider
-
-Default value: `undef`
-
-##### <a name="-provision--terraform--destroy--profile"></a>`profile`
-
-Data type: `String[1]`
-
-The name of the profile to be used for provisioning
 
 Default value: `undef`
 

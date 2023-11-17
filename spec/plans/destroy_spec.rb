@@ -5,6 +5,7 @@ describe 'provision::destroy' do
 
   context 'when running destroy plan for AWS cloud provider' do
     params = {
+      'resource_name' => 'provision-1234567890',
       'provider_options' => {
         'profile' => 'default',
       }

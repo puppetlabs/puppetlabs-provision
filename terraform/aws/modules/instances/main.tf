@@ -50,7 +50,11 @@ resource "aws_instance" "server" {
   }))
 
   associate_public_ip_address = var.associate_public_ip_address
-  user_data = templatefile("${path.module}/../../../../scripts/${var.os_type}.${local.file_extension}", { pe_server = var.pe_server, environment = var.environment, hostname = var.name })
+  user_data = templatefile("${path.module}/../../../../scripts/${var.os_type}.${local.file_extension}", {
+    pe_server = var.pe_server,
+    environment = var.environment,
+    hostname = var.name
+  })
   root_block_device {
     volume_size           = var.root_block_device.volume_size
     volume_type           = var.root_block_device.volume_type

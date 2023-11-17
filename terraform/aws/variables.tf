@@ -1,6 +1,7 @@
 variable "region" {
   description = "AWS region to deploy to"
   type        = string
+  default     = "us-west-2"
 }
 
 variable "name" {
@@ -74,12 +75,6 @@ variable "hardware_architecture" {
   default     = "amd"
 }
 
-variable "profile" {
-  description = "AWS profile to use"
-  type        = string
-  default     = "default"
-}
-
 variable "associate_public_ip_address" {
   description = "To associate public ip address"
   type        = bool
@@ -88,18 +83,18 @@ variable "associate_public_ip_address" {
 
 variable "pe_server" {
   description = "The PE server to be used for pointing the VM's puppet agent to"
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "os_type" {
   description = "The type of operating system (linux or windows) to be used for provisioning the VMs"
-  type = string
-  default = "linux"
+  type        = string
+  default     = "linux"
 }
 
 variable "environment" {
   description = "The puppet environment to place the agent in"
-  type = string
-  default = "production"
+  type        = string
+  default     = "production"
 }
