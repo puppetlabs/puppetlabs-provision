@@ -2,7 +2,7 @@
       Optional[String[1]]                  $hardware_architecture,
       Optional[String[1]]                  $subnet,
       Optional[Array[String[1]]]           $security_group_ids,
-      String                               $region,
+      Optional[String]                     $region,
       String                               $instance_size,
       Hash                                 $tags,
       Optional[String[1]]                  $image,
@@ -24,7 +24,9 @@ name                  = "<%= $resource_name %>"
 <%- if $node_count != undef { -%>
 node_count            = <%= $node_count %>
 <%- } -%>
+<%- if $region != undef { -%>
 region                = "<%= $region %>"
+<%- } -%>
 <%- if $image != undef { -%>
 image                 = "<%= $image %>"
 <%- } -%>

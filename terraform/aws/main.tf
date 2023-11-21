@@ -1,8 +1,7 @@
 # Terraform setup stuff, required providers, where they are sourced from, and
 # the provider's configuration requirements.
 provider "aws" {
-  region  = var.region
-  profile = var.profile
+  region = var.region
   default_tags {
     tags = var.tags
   }
@@ -25,8 +24,8 @@ data "hiera5" "image_architecture" {
 locals {
   image_metadata = split("/", var.image)
   # get the image name & owner name from provided image value
-  image_name                    = try(local.image_metadata[1], local.image_metadata[0])
-  image_owner                   = length(local.image_metadata) > 1 ? local.image_metadata[0] : "*"
+  image_name  = try(local.image_metadata[1], local.image_metadata[0])
+  image_owner = length(local.image_metadata) > 1 ? local.image_metadata[0] : "*"
 }
 
 # Contain all the instances configuration for readability

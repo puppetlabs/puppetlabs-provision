@@ -10,13 +10,13 @@
 # @param resource_name
 #   The name of the resource to be provisioned on respective cloud provider
 #
-# @param profile
-#   The name of the profile to be used for provisioning
+# @param provider_options
+#   A hash of provider specific options to be passed to the Terraform provider
 #
 plan provision::destroy(
   Provision::CloudProvider  $provider          = 'aws',
   String[1]                 $resource_name,
-  Optional[String[1]]       $region            = 'us-west-2',
+  Optional[String[1]]       $region            = undef,
   Optional[Provision::ProviderOptions] $provider_options = undef,
   Optional[String[1]]       $project            = undef,
 ) {

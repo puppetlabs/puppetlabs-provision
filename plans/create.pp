@@ -41,7 +41,6 @@
 #   Eg: 
 #     For instance, when configuring options for AWS, you can include the following settings:
 #     {
-#       "profile": "default",                   # AWS profile name
 #       "ssh_key_name": "ssh_key_name",         # The SSH key-pair name for provisioning the instance.
 #       "root_block_device_volume_type": "gp3", # The type of the root block device.
 #       "root_block_device_volume_size": 10,     # The volume size of the root block device in GB.
@@ -76,7 +75,7 @@ plan provision::create(
   Provision::CloudProvider $provider             = 'aws',
   Provision::InstanceType $instance_size         = 'micro',
   Provision::HardwareArchitecture $hardware_architecture = 'amd',
-  String[1] $region                              = 'us-west-2',
+  Optional[String[1]] $region                    = undef,
   Optional[Integer[1, 10]] $node_count           = 1,
   Optional[Hash[String[1], String[1]]] $tags     = {},
   Optional[String[1]] $pe_server                 = undef,
